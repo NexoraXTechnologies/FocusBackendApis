@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controller/ledgerReport/ledgerReportController');
+const controller = require('../controller/outstandingReport/outstandingReportController');
 
 const {
   validateBody,
@@ -10,9 +10,9 @@ const {
 } = require('../utils/middlewares/ValidateRequest');
 
 const {
-  createLedgerReportSchema,
-  updateLedgerReportSchema
-} = require('../joiValidationSchemas/ledgerReportSchema/ledgerReportValidateSchema');
+  createOutstandingReportSchema,
+  updateOutstandingReportSchema
+} = require('../joiValidationSchemas/outstandingReportSchema/outstandingReportValidateSchema');
 
 const { paginationQuerySchema } = require(
   '../joiValidationSchemas/CommonPaginationSchema/CommonPaginationValidation'
@@ -24,33 +24,33 @@ const { idParamSchema } = require(
 
 router.post(
   '/save',
-  validateBody(createLedgerReportSchema),
-  controller.createLedgerReport
+  validateBody(createOutstandingReportSchema),
+  controller.createOutstandingReport
 );
 
 router.get(
   '/getAll',
   validateQuery(paginationQuerySchema),
-  controller.getAllLedgerReports
+  controller.getAllOutstandingReports
 );
 
 router.get(
   '/getById/:id',
   validateParams(idParamSchema),
-  controller.getLedgerReportById
+  controller.getOutstandingReportById
 );
 
 router.put(
   '/update/:id',
   validateParams(idParamSchema),
-  validateBody(updateLedgerReportSchema),
-  controller.updateLedgerReport
+  validateBody(updateOutstandingReportSchema),
+  controller.updateOutstandingReport
 );
 
 router.delete(
   '/delete/:id',
   validateParams(idParamSchema),
-  controller.deleteLedgerReport
+  controller.deleteOutstandingReport
 );
 
 module.exports = router;

@@ -29,21 +29,31 @@ const createIpCredential = async (payload) => {
 };
 
 const getAllIpCredentials = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50, search = '' } = options;
+  const skip = Number(options.skip || 0);
+  const limit = Number(options.limit || 50);
+  const search = String(options.search || '').trim().toLowerCase();
 
+  const baseConditions = [];
 
-  const searchFilter = search
-    ? {
-        $or: [
-          { ipAddress: { $regex: search, $options: 'i' } },
-          { domain: { $regex: search, $options: 'i' } }
-        ]
-      }
-    : {};
+  baseConditions.push({ isDeleted: false });
+
+  if (search === 'active' || search === 'true') {
+    baseConditions.push({ isActive: true });
+  }
+
+  const searchFilter =
+    search && search !== 'active' && search !== 'true'
+      ? {
+          $or: [
+            { ipAddress: { $regex: search, $options: 'i' } },
+            { domain: { $regex: search, $options: 'i' } }
+          ]
+        }
+      : {};
 
   const finalFilter = {
     $and: [
-      { isDeleted: false },
+      ...baseConditions,
       filter,
       searchFilter
     ]
@@ -64,6 +74,7 @@ const getAllIpCredentials = async (filter = {}, options = {}) => {
     offset: skip
   };
 };
+
 
 
 const getIpCredentialById = async (id) => {
@@ -97,7 +108,6 @@ const updateIpCredential = async (id, payload) => {
     throw new ApiError(400, 'IP Credential ID is required');
   }
 
-  // 1. Fetch current record
   const record = await IpCredential.findOne({
     _id: id,
     isDeleted: false
@@ -107,7 +117,6 @@ const updateIpCredential = async (id, payload) => {
     throw new ApiError(404, 'IP Credential not found');
   }
 
-  // 2. Resolve final values (important)
   const nextIpAddress =
     payload.ipAddress !== undefined ? payload.ipAddress : record.ipAddress;
 
@@ -117,10 +126,9 @@ const updateIpCredential = async (id, payload) => {
   const nextIsActive =
     payload.isActive !== undefined ? payload.isActive : record.isActive;
 
-  // 3. ENFORCE: only one ACTIVE per IP + domain
   if (nextIsActive === true) {
     const activeExists = await IpCredential.findOne({
-      _id: { $ne: id },                 // exclude current record
+      _id: { $ne: id },                 
       ipAddress: nextIpAddress,
       domain: nextDomain,
       isActive: true,
@@ -130,13 +138,11 @@ const updateIpCredential = async (id, payload) => {
     if (activeExists) {
       throw new ApiError(
         400,
-          'To activate this IP credential, the existing active credential must be set to false', errorCodes.INVALID_PAYLOAD
+          'To activate this IP credential, the existing active credential must be set to falsee' , errorCodes.INVALID_PAYLOAD
       );
     }
   }
-  
 
-  // 4. Apply update
   Object.assign(record, payload);
   await record.save();
 

@@ -12,7 +12,7 @@ const {
 const {
   taxMasterValidationSchema,
   updateTaxMasterSchema
-} = require('../joiValidationSchemas/taxMasterValidationSchema/taxMasterValidateSchema');
+} = require('../joiValidationSchemas/taxMasterSchema/taxMasterValidateSchema');
 
 const paginationQuerySchema =
   require   ('../joiValidationSchemas/CommonPaginationSchema/CommonPaginationValidation')

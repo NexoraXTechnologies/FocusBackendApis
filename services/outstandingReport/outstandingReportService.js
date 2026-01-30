@@ -1,40 +1,40 @@
 const mongoose = require('mongoose');
-const LedgerReport = require('../../models/ledgerReportModel');
+const OutstandingReport = require('../../models/outstandingReportModel');
 const { ApiError, errorCodes } = require('../../utils/ResponseHandlers');
 
-/* CREATE */
-const createLedgerReport = async (payload) => {
+
+const createOutstandingReport = async (payload) => {
   if (payload.isActive === undefined) {
     payload.isActive = true;
   }
 
-  const report = new LedgerReport(payload);
+  const report = new OutstandingReport(payload);
   return await report.save();
 };
 
-const getAllLedgerReports = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50, search = '' } = options;
+
+const getAllOutstandingReports = async (filter = {}, options = {}) => {
+  const { skip = 0, limit = 50, search } = options;
 
   const baseFilter = {
     ...filter,
-    isDeleted: false,   
+    isDeleted: false,
     isActive: true
   };
 
-    // existing string search
+  // existing string search
   const searchFilter =
     search && isNaN(new Date(search).getTime())
       ? {
           $or: [
-            { ledgerReportGeneratedBy: { $regex: search, $options: 'i' } }
+            { outstandingReportGeneratedBy: { $regex: search, $options: 'i' } }
           ]
         }
       : {};
 
   Object.assign(baseFilter, searchFilter);
 
-
-  // date search
+    // date search
   if (search) {
   let startDate = null;
   let endDate = null;
@@ -65,19 +65,20 @@ const getAllLedgerReports = async (filter = {}, options = {}) => {
   }
 
   if (startDate && endDate) {
-    baseFilter.ledgerReportGeneratedDateTime = {
+    baseFilter.outstandingReportGeneratedDateTime = {
       $gte: startDate,
       $lte: endDate
     };
   }
 }
 
+
   const [reports, total] = await Promise.all([
-    LedgerReport.find(baseFilter)
+    OutstandingReport.find(baseFilter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 }),
-    LedgerReport.countDocuments(baseFilter)
+    OutstandingReport.countDocuments(baseFilter)
   ]);
 
   return {
@@ -88,52 +89,51 @@ const getAllLedgerReports = async (filter = {}, options = {}) => {
   };
 };
 
-/* GET BY ID */
-const getLedgerReportById = async (id) => {
+const getOutstandingReportById = async (id) => {
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    throw new ApiError(400, 'Invalid Ledger Report ID', errorCodes.INVALID_PAYLOAD);
+    throw new ApiError(400, 'Invalid Outstanding Report ID', errorCodes.INVALID_PAYLOAD);
   }
 
-  const report = await LedgerReport.findOne({
+  const report = await OutstandingReport.findOne({
     _id: id,
     isDeleted: false
   });
 
   if (!report) {
-    throw new ApiError(404, 'Ledger Report not found', errorCodes.NOT_FOUND);
+    throw new ApiError(404, 'Outstanding Report not found', errorCodes.NOT_FOUND);
   }
 
   return report;
 };
 
-/* UPDATE */
-const updateLedgerReport = async (id, payload) => {
+
+const updateOutstandingReport = async (id, payload) => {
   if (!payload || Object.keys(payload).length === 0) {
     throw new ApiError(400, 'No update payload provided', errorCodes.INVALID_PAYLOAD);
   }
 
-  const updated = await LedgerReport.findOneAndUpdate(
+  const updated = await OutstandingReport.findOneAndUpdate(
     { _id: id, isDeleted: false },
     { $set: payload },
     { new: true, runValidators: true }
   );
 
   if (!updated) {
-    throw new ApiError(404, 'Ledger Report not found', errorCodes.NOT_FOUND);
+    throw new ApiError(404, 'Outstanding Report not found', errorCodes.NOT_FOUND);
   }
 
   return updated;
 };
 
-/* DELETE (SOFT) */
-const deleteLedgerReport = async (id) => {
+
+const deleteOutstandingReport = async (id) => {
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    throw new ApiError(400, 'Invalid Ledger Report ID', errorCodes.INVALID_PAYLOAD);
+    throw new ApiError(400, 'Invalid Outstanding Report ID', errorCodes.INVALID_PAYLOAD);
   }
 
-  const report = await LedgerReport.findById(id);
+  const report = await OutstandingReport.findById(id);
   if (!report) {
-    throw new ApiError(404, 'Ledger Report not found', errorCodes.NOT_FOUND);
+    throw new ApiError(404, 'Outstanding Report not found', errorCodes.NOT_FOUND);
   }
 
   if (report.isDeleted) {
@@ -150,9 +150,9 @@ const deleteLedgerReport = async (id) => {
 };
 
 module.exports = {
-  createLedgerReport,
-  getAllLedgerReports,
-  getLedgerReportById,
-  updateLedgerReport,
-  deleteLedgerReport
+  createOutstandingReport,
+  getAllOutstandingReports,
+  getOutstandingReportById,
+  updateOutstandingReport,
+  deleteOutstandingReport
 };

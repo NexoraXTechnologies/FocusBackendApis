@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const controller = require(
-  '../controller/productMasterController/productMasterController'
+  '../controller/productMaster/productMasterController'
 );
 
 const {
@@ -14,7 +14,7 @@ const {
 const {
   createProductSchema,
   updateProductSchema
-} = require ('../joiValidationSchemas/productValidationSchema/productValidationSchema');  
+} = require ('../joiValidationSchemas/productMasterSchema/productMasterValidateSchema');  
 
 const { paginationQuerySchema } = require(
   '../joiValidationSchemas/CommonPaginationSchema/CommonPaginationValidation'

@@ -18,7 +18,7 @@ const paginationQuerySchema =
     .paginationQuerySchema;
 
 const ipCredentialValidationSchema =
-  require('../joiValidationSchemas/ipCredentialValidationSchema/ipCredentialValidateSchema')
+  require('../joiValidationSchemas/ipCredentialSchema/ipCredentialValidateSchema')
     .ipCredentialCreateSchema;
     
 /* ===============================

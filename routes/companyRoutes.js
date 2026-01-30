@@ -12,7 +12,7 @@ const {
 const {
   companyValidationSchema,
   updateCompanySchema
-} = require('../joiValidationSchemas/companyValidationSchema/companyValidateSchema');
+} = require('../joiValidationSchemas/companySchema/companyMasterValidateSchema');
 
 const paginationQuerySchema =
   require('../joiValidationSchemas/CommonPaginationSchema/CommonPaginationValidation')
