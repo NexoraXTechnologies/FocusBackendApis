@@ -22,12 +22,23 @@ const createProduct = async (payload) => {
    GET ALL PRODUCTS
 ================================ */
 const getAllProducts = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50 } = options;
+  const { skip = 0, limit = 50, search } = options;
+
+  const searchFilter = search
+    ? {
+        $or: [
+          { productName: { $regex: search, $options: 'i' } },
+          { productDescription: { $regex: search, $options: 'i' } },
+          { productCode: { $regex: search, $options: 'i' } }
+        ]
+      }
+    : {};
 
   const baseFilter = {
     ...filter,
     isDeleted: false,
-    isActive: true
+    isActive: true,
+    ...searchFilter
   };
 
   const [products, total] = await Promise.all([

@@ -20,11 +20,16 @@ const createProduct = asyncHandler(async (req, res) => {
    GET ALL
 ================================ */
 const getAllProducts = asyncHandler(async (req, res) => {
-  const { limit, offset } = req.query;
+  const { limit, offset , search} = req.query;
+
+  const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 50;
+  const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
+
+  const filter = {};
 
   const result = await productService.getAllProducts(
-    {},
-    { limit, skip: offset }
+    filter,
+    { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '' }
   );
 
   return new ApiResponse({
