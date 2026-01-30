@@ -29,6 +29,7 @@ const getAllProducts = async (filter = {}, options = {}) => {
     isDeleted: false,
     isActive: true
   };
+  
 
   const [products, total] = await Promise.all([
     Product.find(baseFilter)
