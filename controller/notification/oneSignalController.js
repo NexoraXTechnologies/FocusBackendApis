@@ -1,4 +1,4 @@
-const { asyncHandler, errorCodes } = require('../../utils/ResponseHandlers');
+const { asyncHandler} = require('../../utils/ResponseHandlers');
 const oneSignalService = require('../../services/notification/oneSignalService');
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 
@@ -13,6 +13,7 @@ const sendNotificationToAll = asyncHandler(async (req, res) => {
     message,
     data
   });
+  
 
   res.status(200).json(new ApiResponse(200, {
     success: true,
