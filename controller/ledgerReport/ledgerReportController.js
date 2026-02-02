@@ -1,6 +1,7 @@
 const { asyncHandler } = require('../../utils/ResponseHandlers');
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 const service = require('../../services/ledgerReport/ledgerReportService');
+const {buildPaginationMeta} = require('../../utils/pagination/paginationUtil');
 
 /* CREATE */
 const createLedgerReport = asyncHandler(async (req, res) => {
@@ -24,16 +25,20 @@ const getAllLedgerReports = asyncHandler(async (req, res) => {
 
   const result = await service.getAllLedgerReports({}, { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '', isActive });
 
+  // ✅ USE PAGINATION UTILITY
+      const pagination = buildPaginationMeta
+      ({
+        total: result.total,
+        limit: result.limit,
+        offset: result.offset
+      });
+      
   return new ApiResponse({
     statusCode: 200,
     success: true,
     message: 'Ledger Reports fetched',
     data: result.reports,
-    pagination: {
-      total: result.total,
-      limit: result.limit,
-      offset: result.offset
-    }
+    pagination
   }).send(res);
 });
 

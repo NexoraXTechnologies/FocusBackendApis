@@ -27,7 +27,6 @@ const getAllProducts = async (filter = {}, options = {}) => {
    const baseFilter = {
     ...filter,
     isDeleted: false,
-    searchFilter
   };
 
   // ✅ FIXED isActive handling (string + boolean)

@@ -1,6 +1,7 @@
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 const ipCredentialService = require('../../services/ipCredential/ipCredentialService');
 const {asyncHandler} = require('../../utils/ResponseHandlers');
+const {buildPaginationMeta} = require('../../utils/pagination/paginationUtil');
 
 /* ===============================
    CREATE IP CREDENTIAL
@@ -39,16 +40,19 @@ const getAllIpCredentials = asyncHandler(async (req, res) => {
     { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '', isActive }
   );
 
+  // ✅ USE PAGINATION UTILITY
+    const pagination = buildPaginationMeta({
+      total: result.total,
+      limit: result.limit,
+      offset: result.offset
+    });
+
   return new ApiResponse({
     statusCode: 200,
     success: true,
     message: 'IP Credentials fetched',
     data: result.data,
-    pagination: {
-      total: result.total,
-      limit: result.limit,
-      offset: result.offset
-    }
+    pagination
   }).send(res);
 });
 

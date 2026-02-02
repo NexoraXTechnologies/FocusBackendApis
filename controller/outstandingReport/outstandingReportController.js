@@ -1,6 +1,7 @@
 const { asyncHandler } = require('../../utils/ResponseHandlers');
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 const service = require('../../services/outstandingReport/outstandingReportService');
+const {buildPaginationMeta} = require('../../utils/pagination/paginationUtil');
 
 /* CREATE */
 const createOutstandingReport = asyncHandler(async (req, res) => {
@@ -23,16 +24,20 @@ const getAllOutstandingReports = asyncHandler(async (req, res) => {
 
   const result = await service.getAllOutstandingReports({}, { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '', isActive });
 
+  // ✅ USE PAGINATION UTILITY
+    const pagination = buildPaginationMeta
+    ({
+      total: result.total,
+      limit: result.limit,
+      offset: result.offset
+    });
+
   return new ApiResponse({
     statusCode: 200,
     success: true,
     message: 'Outstanding Reports fetched',
     data: result.reports,
-    pagination: {
-      total: result.total,
-      limit: result.limit,
-      offset: result.offset
-    }
+    pagination
   }).send(res);
 });
 

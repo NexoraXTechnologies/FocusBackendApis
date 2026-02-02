@@ -1,7 +1,7 @@
 const taxMasterService = require('../../services/taxMaster/taxMasterService');
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 const { asyncHandler } = require('../../utils/ResponseHandlers');
-
+const {buildPaginationMeta} = require('../../utils/pagination/paginationUtil');
 
 /* ===============================
    CREATE TAX MASTER
@@ -35,24 +35,19 @@ const getAllTaxMasters = asyncHandler(async (req, res) => {
     isActive
   });
 
+  // ✅ USE PAGINATION UTILITY
+      const pagination = buildPaginationMeta({
+        total: result.total,
+        limit: result.limit,
+        offset: result.offset
+      });
+
   return new ApiResponse({
     statusCode: 200,
     success: true,
     message: 'Tax Masters fetched',
-    pagination: {
-      total: result.total,
-      limit: result.limit,
-      offset: result.offset,
-      currentPage:
-        result.limit > 0
-          ? Math.floor(result.offset / result.limit) + 1
-          : 1,
-      totalPages:
-        result.limit > 0
-          ? Math.ceil(result.total / result.limit)
-          : 1,
-    },
     data: result.taxMasters,
+    pagination
   }).send(res);
 });
 

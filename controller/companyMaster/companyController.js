@@ -1,9 +1,11 @@
 const companyService = require('../../services/companyMaster/companyService');
 const {ApiResponse} = require('../../utils/ResponseHandlers');
 const { asyncHandler } = require('../../utils/ResponseHandlers');
-const { escapeRegex } = require('../../joiValidationSchemas/CommonPaginationSchema/CommonPaginationValidation');
-const { buildPaginationMeta } = require('../../utils/pagination/paginationUtil');
+const {buildPaginationMeta} = require('../../utils/pagination/paginationUtil');
 
+/* ===============================
+   CREATE
+================================ */
 const createCompany = asyncHandler (async (req, res) => {
   try {
     const created = await companyService.createCompany(req.body);
@@ -31,10 +33,8 @@ const getAllCompanies = asyncHandler(async (req, res) => {
   const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 50;
   const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
 
-  const filter = {};
-
   const result = await companyService.listCompanies(
-    filter,
+    {},
     {
       limit: limitVal,
       skip: offsetVal,
@@ -43,16 +43,19 @@ const getAllCompanies = asyncHandler(async (req, res) => {
     }
   );
 
+  // ✅ USE PAGINATION UTILITY
+  const pagination = buildPaginationMeta({
+    total: result.total,
+    limit: result.limit,
+    offset: result.offset
+  });
+
   return new ApiResponse({
     statusCode: 200,
     success: true,
     message: 'Companies fetched',
-    data: result.companies,
-    pagination: {
-      total: result.total,
-      limit: result.limit,
-      offset: result.offset
-    }
+    pagination,          // 👈 returned from util
+    data: result.companies
   }).send(res);
 });
 
