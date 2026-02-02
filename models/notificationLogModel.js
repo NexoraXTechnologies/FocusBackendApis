@@ -41,6 +41,16 @@ const notificationLogSchema = new mongoose.Schema(
     data: {
       type: Object,
       default: {}
+    },
+
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+
+    updatedAt: {
+      type: Date,
+      default: Date.now
     }
   },
   {

@@ -2,7 +2,7 @@ const axios = require('axios');
 const { ApiError, errorCodes } = require('../../utils/ResponseHandlers');
 const notificationLogSchema = require('../../models/notificationLogModel'); 
 
-const ONESIGNAL_URL = 'https://onesignal.com/api/v1/notifications';
+const ONESIGNAL_URL = process.env.ONESIGNAL_URL;
 
 const headers = {
   'Content-Type': 'application/json; charset=utf-8',
@@ -24,7 +24,7 @@ const sendToAllUsers = async ({ title, message, data = {} }) => {
   const response = await axios.post(ONESIGNAL_URL, payload, { headers });
 
   // ✅ STORE IN DB
-  await notificationLogSchema.create({
+  const notificationLog = await notificationLogSchema.create({
     title,
     message,
     targetType: 'ALL',
@@ -34,7 +34,7 @@ const sendToAllUsers = async ({ title, message, data = {} }) => {
     data
   });
 
-  return response.data;
+  return notificationLog;
 };
 
 /* ===============================
@@ -60,7 +60,7 @@ const sendToUser = async ({ externalUserId, title, message, data = {} }) => {
   const response = await axios.post(ONESIGNAL_URL, payload, { headers });
 
   // ✅ STORE IN DB (NO RESPONSE CHANGE)
-  await notificationLogSchema.create({
+  const notificationLog = await notificationLogSchema.create({
     title,
     message,
     targetType: 'USER',
@@ -74,7 +74,7 @@ const sendToUser = async ({ externalUserId, title, message, data = {} }) => {
     data
   });
 
-  return response.data;
+  return notificationLog;
 };
 
 module.exports = {

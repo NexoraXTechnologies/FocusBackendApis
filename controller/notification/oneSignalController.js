@@ -13,13 +13,14 @@ const sendNotificationToAll = asyncHandler(async (req, res) => {
     message,
     data
   });
-  
 
-  res.status(200).json(new ApiResponse(200, {
+
+  return new ApiResponse({
+    statusCode: 200,
     success: true,
     message: 'Notification sent to all users',
-    result
-  }));
+    data: result
+  }).send(res);
 });
 
 /* ===============================
@@ -35,11 +36,12 @@ const sendNotificationToUser = asyncHandler(async (req, res) => {
     data
   });
 
-  res.status(200).json(new ApiResponse(200, {
+  return new ApiResponse({
+    statusCode: 200,
     success: true,
     message: 'Notification sent to user',
-    result
-  }));
+    data: result
+  }).send(res);
 });
 
 module.exports = {
