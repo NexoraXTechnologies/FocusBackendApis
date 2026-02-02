@@ -25,7 +25,8 @@ const getAllIpCredentials = asyncHandler(async (req, res) => {
   const {
     limit,
     offset,
-    search
+    search,
+    isActive
   } = req.query;
 
   const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 50;
@@ -35,7 +36,7 @@ const getAllIpCredentials = asyncHandler(async (req, res) => {
 
   const result = await ipCredentialService.getAllIpCredentials(
     filter,
-    { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '' }
+    { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '', isActive }
   );
 
   return new ApiResponse({

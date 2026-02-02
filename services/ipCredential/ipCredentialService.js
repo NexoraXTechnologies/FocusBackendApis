@@ -29,42 +29,40 @@ const createIpCredential = async (payload) => {
 };
 
 const getAllIpCredentials = async (filter = {}, options = {}) => {
-  const skip = Number(options.skip || 0);
-  const limit = Number(options.limit || 50);
-  const search = String(options.search || '').trim().toLowerCase();
+  const { skip = 0, limit = 50, search, isActive } = options;
 
-  const baseConditions = [];
-
-  baseConditions.push({ isDeleted: false });
-
-  if (search === 'active' || search === 'true') {
-    baseConditions.push({ isActive: true });
-  }
-
-  const searchFilter =
-    search && search !== 'active' && search !== 'true'
-      ? {
-          $or: [
-            { ipAddress: { $regex: search, $options: 'i' } },
-            { domain: { $regex: search, $options: 'i' } }
-          ]
-        }
-      : {};
-
-  const finalFilter = {
-    $and: [
-      ...baseConditions,
-      filter,
-      searchFilter
-    ]
+  const baseFilter = {
+    ...filter,
+    isDeleted: false
   };
 
+  // ✅ FIXED isActive handling (string + boolean)
+  if (isActive === true || isActive === 'true') {
+    baseFilter.isActive = true;
+  } else if (isActive === false || isActive === 'false') {
+    baseFilter.isActive = false;
+  } else {
+    baseFilter.isActive = true; // default behavior
+  }
+
+  // search filter
+  const searchFilter = search
+    ? {
+        $or: [
+          { ipAddress: { $regex: search, $options: 'i' } },
+          { domain: { $regex: search, $options: 'i' } }
+        ]
+      }
+    : {};
+
+  Object.assign(baseFilter, searchFilter);
+
   const [data, total] = await Promise.all([
-    IpCredential.find(finalFilter)
+    IpCredential.find(baseFilter)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 }),
-    IpCredential.countDocuments(finalFilter)
+    IpCredential.countDocuments(baseFilter)
   ]);
 
   return {
@@ -74,6 +72,7 @@ const getAllIpCredentials = async (filter = {}, options = {}) => {
     offset: skip
   };
 };
+
 
 
 

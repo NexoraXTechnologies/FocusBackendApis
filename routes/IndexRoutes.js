@@ -8,6 +8,7 @@ router.use('/productMaster', require('./productRoutes'));
 router.use('/ledgerReport', require('./ledgerReportRoutes'));
 router.use('/outstandingReport', require('./outstandingReportRoutes'));
 router.use('/pendingOrderReport', require('./pendingOrderReportRoutes'));
+router.use('/silrReport', require('./silrReportRoutes'));
 
 
 module.exports = router;

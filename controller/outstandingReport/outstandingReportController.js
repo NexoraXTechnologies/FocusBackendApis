@@ -16,12 +16,12 @@ const createOutstandingReport = asyncHandler(async (req, res) => {
 
 /* GET ALL */
 const getAllOutstandingReports = asyncHandler(async (req, res) => {
-  const { limit, offset, search } = req.query;
+  const { limit, offset, search, isActive } = req.query;
 
   const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 50;
   const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
 
-  const result = await service.getAllOutstandingReports({}, { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '' });
+  const result = await service.getAllOutstandingReports({}, { limit: limitVal, skip: offsetVal, search: typeof search === 'string' ? search.trim() : '', isActive });
 
   return new ApiResponse({
     statusCode: 200,

@@ -16,11 +16,11 @@ const createPendingOrderReport = asyncHandler(async (req, res) => {
 
 /* GET ALL */
 const getAllPendingOrderReports = asyncHandler(async (req, res) => {
-  const { limit, offset, search } = req.query;
+  const { limit, offset, search, isActive } = req.query;
 
   const result = await service.getAllPendingOrderReports(
     {},
-    { limit, skip: offset, search }
+    { limit, skip: offset, search, isActive }
   );
 
   return new ApiResponse({

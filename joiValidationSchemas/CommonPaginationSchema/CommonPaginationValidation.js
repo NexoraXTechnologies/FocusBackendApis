@@ -27,4 +27,5 @@ exports.paginationQuerySchema = Joi.object({
     .messages({
       "string.base": "search must be a string",
     }),
+
 });

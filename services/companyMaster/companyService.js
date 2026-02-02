@@ -19,12 +19,30 @@ const createCompany = async (payload) => {
    LIST COMPANIES
 ================================ */
 const listCompanies = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50 } = options;
+  const { skip = 0, limit = 50, search = '', isActive } = options;
 
   const baseFilter = {
     ...filter,
-    isDeleted: false,
+    isDeleted: false
   };
+
+  // ✅ DEFAULT: active only
+  if (isActive === 'false' || isActive === false) {
+    baseFilter.isActive = false;
+  } else {
+    // covers isActive === 'true', true, or undefined
+    baseFilter.isActive = true;
+  }
+
+  // 🔍 search logic
+  if (search) {
+    const q = escapeRegex(search);
+    baseFilter.$or = [
+      { companyName: { $regex: q, $options: 'i' } },
+      { companyCode: { $regex: q, $options: 'i' } },
+      { companyType: { $regex: `^${q}$`, $options: 'i' } }
+    ];
+  }
 
   const [companies, total] = await Promise.all([
     Company.find(baseFilter)
@@ -32,16 +50,18 @@ const listCompanies = async (filter = {}, options = {}) => {
       .limit(limit)
       .sort({ createdAt: -1 })
       .exec(),
-    Company.countDocuments(baseFilter).exec(),
+    Company.countDocuments(baseFilter).exec()
   ]);
 
   return {
     companies,
     total,
     limit,
-    offset: skip,
+    offset: skip
   };
 };
+
+
 
 /* ===============================
    GET COMPANY BY ID

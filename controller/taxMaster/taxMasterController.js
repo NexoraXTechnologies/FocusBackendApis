@@ -21,25 +21,18 @@ const createTaxMaster = asyncHandler(async (req, res) => {
    GET ALL TAX MASTERS
 ================================ */
 const getAllTaxMasters = asyncHandler(async (req, res) => {
-  const { limit, offset, search } = req.query;
+  const { limit, offset, search, isActive } = req.query;
 
   const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 20;
   const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
 
   const filter = {};
 
-  if (typeof search === 'string' && search.trim().length > 0) {
-    const q = search.trim();
-    filter.$or = [
-      { name: { $regex: q, $options: 'i' } },
-      { code: { $regex: q, $options: 'i' } },
-      { group: { $regex: q, $options: 'i' } },
-    ];
-  }
-
   const result = await taxMasterService.getAllTaxMasters(filter, {
     skip: offsetVal,
     limit: limitVal,
+    search,
+    isActive
   });
 
   return new ApiResponse({

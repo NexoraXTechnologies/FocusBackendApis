@@ -23,7 +23,22 @@ const createTaxMaster = async (payload) => {
    GET ALL TAX MASTERS
 ================================ */
 const getAllTaxMasters = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50, search = '' } = options;
+  const { skip = 0, limit = 50, search = '', isActive } = options;
+
+   const baseFilter = {
+    ...filter,
+    isDeleted: false,
+    searchFilter
+  };
+
+  // ✅ FIXED isActive handling (string + boolean)
+  if (isActive === true || isActive === 'true') {
+    baseFilter.isActive = true;
+  } else if (isActive === false || isActive === 'false') {
+    baseFilter.isActive = false;
+  } else {
+    baseFilter.isActive = true; // default behavior
+  }
 
   const searchFilter = search
     ? {
@@ -35,14 +50,7 @@ const getAllTaxMasters = async (filter = {}, options = {}) => {
       }
     : {};
 
-  const baseFilter = {
-    $and: [
-      { isDeleted: false },        
-      searchFilter,
-      filter
-    ]
-  };
-
+ 
   const [taxMasters, total] = await Promise.all([
     TaxMaster.find(baseFilter)
       .skip(skip)

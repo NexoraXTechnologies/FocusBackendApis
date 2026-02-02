@@ -13,13 +13,21 @@ const createLedgerReport = async (payload) => {
 };
 
 const getAllLedgerReports = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50, search = '' } = options;
+  const { skip = 0, limit = 50, search = '', isActive } = options;
 
   const baseFilter = {
     ...filter,
     isDeleted: false,   
-    isActive: true
   };
+
+  // ✅ FIXED isActive handling (string + boolean)
+  if (isActive === true || isActive === 'true') {
+    baseFilter.isActive = true;
+  } else if (isActive === false || isActive === 'false') {
+    baseFilter.isActive = false;
+  } else {
+    baseFilter.isActive = true; // default behavior
+  }
 
     // existing string search
   const searchFilter =

@@ -29,7 +29,7 @@ router.post(
 router.get(
   '/getAll',
   validateQuery(paginationQuerySchema),
-  controller.listCompanies
+  controller.getAllCompanies
 );
 
 router.get(

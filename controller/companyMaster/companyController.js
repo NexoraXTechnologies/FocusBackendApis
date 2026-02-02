@@ -22,57 +22,39 @@ const createCompany = asyncHandler (async (req, res) => {
   }
 });
 
-const listCompanies = asyncHandler(async (req, res) => {
-  try {
-    const { limit, offset, search } = req.query;
+/* ===============================
+   GET ALL
+================================ */
+const getAllCompanies = asyncHandler(async (req, res) => {
+  const { limit, offset, search, isActive } = req.query;
 
-    const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 20;
-    const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
+  const limitVal = Number.isFinite(Number(limit)) ? Number(limit) : 50;
+  const offsetVal = Number.isFinite(Number(offset)) ? Number(offset) : 0;
 
-    const filter = {};
+  const filter = {};
 
-    if (typeof search === 'string' && search.trim().length > 0) {
-      const q = escapeRegex(search.trim());
-      filter.$or = [
-        { companyName: { $regex: q, $options: 'i' } },
-        { companyCode: { $regex: q, $options: 'i' } },
-        { companyType: { $regex: `^${q}$`, $options: 'i' } },
-      ];
-    }
-
-    const result = await companyService.listCompanies(filter, {
-      skip: offsetVal,
+  const result = await companyService.listCompanies(
+    filter,
+    {
       limit: limitVal,
-    });
+      skip: offsetVal,
+      search: typeof search === 'string' ? search.trim() : '',
+      isActive
+    }
+  );
 
-    // ⭐ UPDATED: use shared pagination utility
-    const paginationMeta = buildPaginationMeta({
+  return new ApiResponse({
+    statusCode: 200,
+    success: true,
+    message: 'Companies fetched',
+    data: result.companies,
+    pagination: {
       total: result.total,
       limit: result.limit,
-      offset: result.offset,
-    });
-
-    return new ApiResponse({
-      statusCode: 200,
-      success: true,
-      message: 'Companies fetched',
-
-      // ⭐ UPDATED: replace inline pagination with util output
-      pagination: paginationMeta,
-
-      data: result.companies,
-    }).send(res);
-
-  } catch (err) {
-    return new ApiResponse({
-      statusCode: 500,
-      success: false,
-      message: err.message,
-    }).send(res);
-  }
+      offset: result.offset
+    }
+  }).send(res);
 });
-
-
 
 
 
@@ -139,7 +121,7 @@ const deleteCompany = asyncHandler(async (req, res) => {
 
 module.exports = {
   createCompany,
-  listCompanies,
+  getAllCompanies,
   getCompany,
   updateCompany,
   deleteCompany,

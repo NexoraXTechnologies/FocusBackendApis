@@ -22,7 +22,22 @@ const createProduct = async (payload) => {
    GET ALL PRODUCTS
 ================================ */
 const getAllProducts = async (filter = {}, options = {}) => {
-  const { skip = 0, limit = 50, search } = options;
+  const { skip = 0, limit = 50, search, isActive } = options;
+
+   const baseFilter = {
+    ...filter,
+    isDeleted: false,
+    searchFilter
+  };
+
+  // ✅ FIXED isActive handling (string + boolean)
+  if (isActive === true || isActive === 'true') {
+    baseFilter.isActive = true;
+  } else if (isActive === false || isActive === 'false') {
+    baseFilter.isActive = false;
+  } else {
+    baseFilter.isActive = true; // default behavior
+  }
 
   const searchFilter = search
     ? {
@@ -33,13 +48,6 @@ const getAllProducts = async (filter = {}, options = {}) => {
         ]
       }
     : {};
-
-  const baseFilter = {
-    ...filter,
-    isDeleted: false,
-    isActive: true,
-    ...searchFilter
-  };
 
   const [products, total] = await Promise.all([
     Product.find(baseFilter)
