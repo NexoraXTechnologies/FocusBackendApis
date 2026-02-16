@@ -21,7 +21,6 @@ const getAllPendingOrderReports = async (filter = {}, options = {}) => {
     isDeleted: false,
   };
 
-  // ✅ FIXED isActive handling (string + boolean)
   if (isActive === true || isActive === 'true') {
     baseFilter.isActive = true;
   } else if (isActive === false || isActive === 'false') {

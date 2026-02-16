@@ -22,13 +22,11 @@ const productMasterSchema = new mongoose.Schema(
 
     unit: {
       type: String,
-      required: [true, 'Unit is required'],
       trim: true
     },
 
     productType: {
       type: String,
-      required: [true, 'Product type is required'],
       trim: true
     },
 
@@ -70,4 +68,4 @@ const productMasterSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('ProductMaster', productMasterSchema);
+module.exports = mongoose.model('Product', productMasterSchema);
