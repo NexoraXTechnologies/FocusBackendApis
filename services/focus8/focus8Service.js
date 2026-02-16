@@ -61,7 +61,7 @@ const focus8List = async (endpoint) => {
    PRODUCTS
 ====================================================== */
 const fetchProductsFromFocus8 = async () => {
-  return await focus8List('/Focus8API/List/Masters/Core__Product?fields=sCode,sName,Status');
+  return await focus8List('/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iMasterId,IsPosted');
 };
 
 /* ======================================================
@@ -176,12 +176,107 @@ const updateAllAccountsIsPostedNo = async () => {
   };
 };
 
+/* ======================================================
+   FAST BULK UPDATE PRODUCT → SET IsPosted = "No"
+====================================================== */
+const updateAllProductsIsPostedNo = async () => {
+  const sessionId = await loginToFocus8();
 
+  const headers = {
+    'Content-Type': 'application/json',
+    fSessionId: sessionId
+  };
+
+  console.log("Fetching product list...");
+
+  // Step 1: Fetch all products WITH masterId
+  const listRes = await axios.get(
+    `${BASE_URL}/Focus8API/List/Masters/Core__Product?fields=IsPosted,iMasterId,sCode,sName`,
+    { headers }
+  );
+
+  if (listRes.data?.result !== 1) {
+    throw new Error(listRes.data?.message || 'Failed to fetch products');
+  }
+
+  const products = listRes.data.data || [];
+
+  console.log("Total Products:", products.length);
+
+  // Step 2: Filter only IsPosted = Yes
+  const toUpdate = products.filter(p => p.IsPosted === "Yes" && p.iMasterId);
+
+  console.log("Products needing update:", toUpdate.length);
+
+  // Step 3: Iterate one by one to handle stuck records
+  // We use batchSize = 1 and a short timeout to skip problematic records quickly
+  const batchSize = 1;
+  let updatedCount = 0;
+  let failedCount = 0;
+
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  for (let i = 0; i < toUpdate.length; i += batchSize) {
+    const batch = toUpdate.slice(i, i + batchSize);
+    const item = batch[0]; // Single item
+
+    console.log(`Updating product ${i + 1}/${toUpdate.length}: ${item.sCode} (${item.iMasterId})...`);
+
+    // Payload with all fields to satisfy "Mandatory" checks, but prevent "Unique" checks if possible
+    // Note: If "Code Is Unique" error persists, this record might be a duplicate in Focus8
+    const payload = {
+      data: [{
+        iMasterId: item.iMasterId,
+        sCode: item.sCode,
+        sName: item.sName,
+        IsPosted: "No"
+      }]
+    };
+
+    try {
+      const updateRes = await axios.post(
+        `${BASE_URL}/Focus8API/Masters/Core__Product`,
+        payload,
+        {
+          headers,
+          // Short timeout (10s) to avoid hanging on locked records
+          timeout: 10000
+        }
+      );
+
+      if (updateRes.data?.result === 1) {
+        updatedCount++;
+        console.log(`✔ Success: ${item.sCode}`);
+      } else {
+        failedCount++;
+        console.warn(`✖ Failed: ${item.sCode} - ${updateRes.data?.message}`);
+      }
+
+    } catch (err) {
+      failedCount++;
+      console.error(`✖ Error for ${item.sCode}: ${err.message}`);
+    }
+
+    // Small delay between requests
+    await sleep(500);
+
+    // Refresh session every 20 items
+    if (i > 0 && i % 20 === 0) {
+      headers.fSessionId = await loginToFocus8();
+    }
+  }
+
+  return {
+    success: true,
+    message: `Bulk product update completed. Updated ${updatedCount} products.`
+  };
+};
 
 module.exports = {
   loginToFocus8,
   getPayments,
   getPaymentByDocNo,
   fetchProductsFromFocus8,
-  updateAllAccountsIsPostedNo
+  updateAllAccountsIsPostedNo,
+  updateAllProductsIsPostedNo
 };

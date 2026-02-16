@@ -47,4 +47,4 @@ autoPostRegistrySchema.index(
 module.exports = mongoose.model(
   'AutoPostRegistry',
   autoPostRegistrySchema
-);
+);autoPostRegistrySchema

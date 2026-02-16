@@ -1,4 +1,4 @@
-const { updateAllAccountsIsPostedNo } = require('../../services/focus8/focus8Service');
+const { updateAllAccountsIsPostedNo, updateAllProductsIsPostedNo } = require('../../services/focus8/focus8Service');
 
 const updateAccounts = async (req, res) => {
   // Start the update process in the background
@@ -17,4 +17,20 @@ const updateAccounts = async (req, res) => {
   });
 };
 
-module.exports = { updateAccounts };  
+const updateProducts = async (req, res) => {
+  // Start the update process in the background
+  updateAllProductsIsPostedNo()
+    .then((result) => {
+      console.log("Background Product Update Completed:", result);
+    })
+    .catch((error) => {
+      console.error("Background Product Update Failed:", error);
+    });
+
+  return res.status(202).json({
+    success: true,
+    message: "Product IsPosted reset (to No) started in background."
+  });
+};
+
+module.exports = { updateAccounts, updateProducts };  
