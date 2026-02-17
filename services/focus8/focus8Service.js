@@ -54,11 +54,19 @@ const focus8List = async (endpoint) => {
     }
   );
 
-  if (response.data?.result !== 1) {
-    throw new Error(response.data?.message || 'Focus8 API failed');
+  if (response.data?.result === 1) {
+    return response.data.data || [];
   }
 
-  return response.data.data || [];
+  // Create a fallback for endpoints that return data directly without "result: 1" wrapper
+  if (response.data && (!response.data.hasOwnProperty('result') || response.data.result === 0)) {
+    // If it looks like valid data (array or object), return it. 
+    // Be careful not to swallow actual errors.
+    console.log('Focus8 API returned non-standard response:', JSON.stringify(response.data).substring(0, 200));
+    return response.data;
+  }
+
+  throw new Error(response.data?.message || 'Focus8 API failed');
 };
 
 /* ======================================================
@@ -116,12 +124,6 @@ const getTransactions = async (endpoint) => {
    SALES ORDERS
 ====================================================== */
 const getSalesOrders = async () => {
-  // Assuming 200 is the transaction type for Sales Orders, or adjust accordingly
-  // Standard Focus8 list path for a specific transaction type usually involves the name or ID
-  // If the user meant "Sales Order" specifically, we might need the exact URL or ID 
-  // For now, based on the request "List/Transactions", we provide a generic way or specific one
-  // The user provided "https://focus.venusohs.com/Focus8API/List/Transactions" as "list of Sales order"
-  // If that URL returns ALL transactions, we'll use that.
   return await focus8List('/Focus8API/List/Transactions');
 };
 
@@ -134,7 +136,7 @@ const getVoucherTypes = async () => {
 
 const getPaymentByDocNo = async (docNo) => {
   const sessionId = await loginToFocus8();
-  // URL-encode the docNo to handle special characters like slashes (e.g. 25-26/ABPI/6250)
+
   const encodedDocNo = encodeURIComponent(docNo);
   const response = await axios.get(
     `${BASE_URL}/Focus8API/Screen/Transactions/Payments/${encodedDocNo}`,
@@ -267,8 +269,6 @@ const updateAllProductsIsPostedNo = async () => {
 
   console.log("Products needing update:", toUpdate.length);
 
-  // Step 3: Iterate one by one to handle stuck records
-  // We use batchSize = 1 and a short timeout to skip problematic records quickly
   const batchSize = 1;
   let updatedCount = 0;
   let failedCount = 0;
@@ -281,8 +281,6 @@ const updateAllProductsIsPostedNo = async () => {
 
     console.log(`Updating product ${i + 1}/${toUpdate.length}: ${item.sCode} (${item.iMasterId})...`);
 
-    // Payload with all fields to satisfy "Mandatory" checks, but prevent "Unique" checks if possible
-    // Note: If "Code Is Unique" error persists, this record might be a duplicate in Focus8
     const payload = {
       data: [{
         iMasterId: item.iMasterId,

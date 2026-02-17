@@ -3,8 +3,6 @@ const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 
 /* ======================================================
    LOGIN USER TO FOCUS8
-   Endpoint: POST /api/v1/focus8/login
-   Body: { username, password, companyId }
 ====================================================== */
 const loginToFocus8Controller = async (req, res, next) => {
     try {
@@ -26,5 +24,5 @@ const loginToFocus8Controller = async (req, res, next) => {
     }
 };
 
-// Removed getCompaniesController as it's moved to master controller
+
 module.exports = { loginToFocus8Controller };

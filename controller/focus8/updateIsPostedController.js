@@ -1,7 +1,6 @@
 const { updateAllAccountsIsPostedNo, updateAllProductsIsPostedNo } = require('../../services/focus8/focus8Service');
 
 const updateAccounts = async (req, res) => {
-  // Start the update process in the background
   updateAllAccountsIsPostedNo()
     .then((result) => {
       console.log("Backgroud Account Update Completed:", result);
@@ -10,7 +9,6 @@ const updateAccounts = async (req, res) => {
       console.error("Background Account Update Failed:", error);
     });
 
-  // Return immediate response
   return res.status(202).json({
     success: true,
     message: "Account update process started in the background. Check server logs for progress."
@@ -18,7 +16,6 @@ const updateAccounts = async (req, res) => {
 };
 
 const updateProducts = async (req, res) => {
-  // Start the update process in the background
   updateAllProductsIsPostedNo()
     .then((result) => {
       console.log("Background Product Update Completed:", result);

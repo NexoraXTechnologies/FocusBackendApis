@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 
 const generateRuntimePdf = async (payments) => {
-  // Ensure we always work with an array
+
   const paymentList = Array.isArray(payments) ? payments : [payments];
 
   const html = `
