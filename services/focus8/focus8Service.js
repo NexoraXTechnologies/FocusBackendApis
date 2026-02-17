@@ -4,7 +4,9 @@ const BASE_URL = process.env.FOCUS8_BASE_URL;
 
 /* ======================================================
    LOGIN TO FOCUS8
-====================================================== */
+==========================================array.forEach(element => {
+  
+});=========== */
 const loginToFocus8 = async (credentials) => {
   const username = credentials?.username || process.env.FOCUS8_USERNAME;
   const password = credentials?.password || process.env.FOCUS8_PASSWORD;
@@ -59,8 +61,6 @@ const focus8List = async (endpoint) => {
   return response.data.data || [];
 };
 
-
-
 /* ======================================================
    PRODUCTS
 ====================================================== */
@@ -75,6 +75,34 @@ const getPayments = async () => {
   return await focus8List(
     '/Focus8API/List/Transactions/Payments'
   );
+};
+
+/* ======================================================
+   List Of Company Master
+====================================================== */
+const getCompanies = async () => {
+  return await focus8List('/Focus8API/List/Company');
+};
+
+/* ======================================================
+   List Of Account Master
+====================================================== */
+const getAccounts = async () => {
+  return await focus8List('/Focus8API/List/Masters/Core__Account');
+};
+
+/* ======================================================
+   PRODUCT MASTER
+====================================================== */
+const getProducts = async () => {
+  return await focus8List('/Focus8API/List/Masters/Core__Product');
+};
+
+/* ======================================================
+   TAX MASTER
+====================================================== */
+const getTaxMasters = async () => {
+  return await focus8List('/Focus8API/List/Masters/Core__TaxMaster');
 };
 
 const getPaymentByDocNo = async (docNo) => {
@@ -278,6 +306,10 @@ const updateAllProductsIsPostedNo = async () => {
 
 module.exports = {
   loginToFocus8,
+  getCompanies,
+  getAccounts,
+  getProducts,
+  getTaxMasters,
   getPayments,
   getPaymentByDocNo,
   fetchProductsFromFocus8,

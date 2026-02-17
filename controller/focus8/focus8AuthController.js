@@ -26,4 +26,5 @@ const loginToFocus8Controller = async (req, res, next) => {
     }
 };
 
+// Removed getCompaniesController as it's moved to master controller
 module.exports = { loginToFocus8Controller };
