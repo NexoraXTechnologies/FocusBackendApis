@@ -5,7 +5,14 @@ const productImportController = require('../controller/focus8/productImportContr
 const { generatePdfController } = require("../controller/focus8/paymentPdfController");
 const { updateAccounts, updateProducts } = require("../controller/focus8/updateIsPostedController");
 const { loginToFocus8Controller } = require("../controller/focus8/focus8AuthController");
-const { getCompaniesController, getAccountsController, getProductsController, getTaxMastersController } = require("../controller/focus8/focus8MasterController");
+const {
+    getCompaniesController,
+    getAccountsController,
+    getProductsController,
+    getTaxMastersController,
+    getTransactionsController,
+    getVoucherTypesController
+} = require("../controller/focus8/focus8MasterController");
 
 // Import products from Focus8
 router.post('/products/import', productImportController.syncProducts);
@@ -33,5 +40,11 @@ router.get("/products", getProductsController);
 
 // Get Tax Master List
 router.get("/tax-masters", getTaxMastersController);
+
+// Get Transactions List (Sales, etc.)
+router.get("/transactions", getTransactionsController);
+
+// Get Voucher Types
+router.get("/voucher-types", getVoucherTypesController);
 
 module.exports = router;

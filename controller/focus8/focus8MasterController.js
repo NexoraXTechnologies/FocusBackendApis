@@ -1,8 +1,8 @@
-const { getCompanies, getAccounts, getProducts, getTaxMasters } = require('../../services/focus8/focus8Service');
+const { getCompanies, getAccounts, getProducts, getTaxMasters, getTransactions, getVoucherTypes } = require('../../services/focus8/focus8Service');
 const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 
 /* ======================================================
-   GET COMPANY LIST
+   GET COMPANY MASTER
 ====================================================== */
 const getCompaniesController = async (req, res, next) => {
     try {
@@ -19,7 +19,7 @@ const getCompaniesController = async (req, res, next) => {
 };
 
 /* ======================================================
-   GET ACCOUNT LIST
+   GET ACCOUNT MASTER
 ====================================================== */
 const getAccountsController = async (req, res, next) => {
     try {
@@ -36,8 +36,7 @@ const getAccountsController = async (req, res, next) => {
 };
 
 /* ======================================================
-   GET PRODUCT LIST
-   Endpoint: GET /api/v1/focus8/products
+   GET PRODUCT MASTER
 ====================================================== */
 const getProductsController = async (req, res, next) => {
     try {
@@ -53,9 +52,8 @@ const getProductsController = async (req, res, next) => {
     }
 };
 
-/* ======================================================
-   GET TAX MASTER LIST
-   Endpoint: GET /api/v1/focus8/tax-masters
+/* =============== =======================================
+   GET TAX MASTER
 ====================================================== */
 const getTaxMastersController = async (req, res, next) => {
     try {
@@ -71,4 +69,45 @@ const getTaxMastersController = async (req, res, next) => {
     }
 };
 
-module.exports = { getCompaniesController, getAccountsController, getProductsController, getTaxMastersController };
+/* ======================================================
+   GET TRANSACTIONS 
+====================================================== */
+const getTransactionsController = async (req, res, next) => {
+    try {
+        const transactions = await getTransactions();
+
+        return new ApiResponse({
+            message: "Transaction list fetched successfully",
+            data: transactions
+        }).send(res);
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+/* ======================================================
+   GET VOUCHER TYPES
+====================================================== */
+const getVoucherTypesController = async (req, res, next) => {
+    try {
+        const voucherTypes = await getVoucherTypes();
+
+        return new ApiResponse({
+            message: "Voucher types fetched successfully",
+            data: voucherTypes
+        }).send(res);
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+module.exports = {
+    getCompaniesController,
+    getAccountsController,
+    getProductsController,
+    getTaxMastersController,
+    getTransactionsController,
+    getVoucherTypesController
+};

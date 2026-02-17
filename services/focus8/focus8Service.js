@@ -105,6 +105,33 @@ const getTaxMasters = async () => {
   return await focus8List('/Focus8API/List/Masters/Core__TaxMaster');
 };
 
+/* ======================================================
+   TRANSACTION LIST
+====================================================== */
+const getTransactions = async (endpoint) => {
+  return await focus8List(endpoint || '/Focus8API/List/Transactions');
+};
+
+/* ======================================================
+   SALES ORDERS
+====================================================== */
+const getSalesOrders = async () => {
+  // Assuming 200 is the transaction type for Sales Orders, or adjust accordingly
+  // Standard Focus8 list path for a specific transaction type usually involves the name or ID
+  // If the user meant "Sales Order" specifically, we might need the exact URL or ID 
+  // For now, based on the request "List/Transactions", we provide a generic way or specific one
+  // The user provided "https://focus.venusohs.com/Focus8API/List/Transactions" as "list of Sales order"
+  // If that URL returns ALL transactions, we'll use that.
+  return await focus8List('/Focus8API/List/Transactions');
+};
+
+/* ======================================================
+   VOUCHER TYPES
+====================================================== */
+const getVoucherTypes = async () => {
+  return await focus8List('/Focus8API/Screen/Transactions/VoucherTypes');
+};
+
 const getPaymentByDocNo = async (docNo) => {
   const sessionId = await loginToFocus8();
   // URL-encode the docNo to handle special characters like slashes (e.g. 25-26/ABPI/6250)
@@ -310,6 +337,9 @@ module.exports = {
   getAccounts,
   getProducts,
   getTaxMasters,
+  getTransactions,
+  getSalesOrders,
+  getVoucherTypes,
   getPayments,
   getPaymentByDocNo,
   fetchProductsFromFocus8,
