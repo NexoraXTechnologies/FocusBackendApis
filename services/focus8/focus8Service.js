@@ -5,15 +5,19 @@ const BASE_URL = process.env.FOCUS8_BASE_URL;
 /* ======================================================
    LOGIN TO FOCUS8
 ====================================================== */
-const loginToFocus8 = async () => {
+const loginToFocus8 = async (credentials) => {
+  const username = credentials?.username || process.env.FOCUS8_USERNAME;
+  const password = credentials?.password || process.env.FOCUS8_PASSWORD;
+  const companyId = credentials?.companyId || process.env.FOCUS8_COMPANY;
+
   const response = await axios.post(
     `${BASE_URL}/focus8api/login`,
     {
       data: [
         {
-          Username: process.env.FOCUS8_USERNAME,
-          password: process.env.FOCUS8_PASSWORD,
-          CompanyId: process.env.FOCUS8_COMPANY
+          Username: username,
+          password: password,
+          CompanyId: companyId
         }
       ],
       result: 1,
