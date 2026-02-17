@@ -4,9 +4,7 @@ const BASE_URL = process.env.FOCUS8_BASE_URL;
 
 /* ======================================================
    LOGIN TO FOCUS8
-==========================================array.forEach(element => {
-  
-});=========== */
+===================================================== */
 const loginToFocus8 = async (credentials) => {
   const username = credentials?.username || process.env.FOCUS8_USERNAME;
   const password = credentials?.password || process.env.FOCUS8_PASSWORD;
@@ -58,10 +56,9 @@ const focus8List = async (endpoint) => {
     return response.data.data || [];
   }
 
-  // Create a fallback for endpoints that return data directly without "result: 1" wrapper
+
   if (response.data && (!response.data.hasOwnProperty('result') || response.data.result === 0)) {
-    // If it looks like valid data (array or object), return it. 
-    // Be careful not to swallow actual errors.
+
     console.log('Focus8 API returned non-standard response:', JSON.stringify(response.data).substring(0, 200));
     return response.data;
   }
@@ -113,12 +110,7 @@ const getTaxMasters = async () => {
   return await focus8List('/Focus8API/List/Masters/Core__TaxMaster');
 };
 
-/* ======================================================
-   TRANSACTION LIST
-====================================================== */
-const getTransactions = async (endpoint) => {
-  return await focus8List(endpoint || '/Focus8API/List/Transactions');
-};
+
 
 /* ======================================================
    SALES ORDERS
@@ -335,7 +327,6 @@ module.exports = {
   getAccounts,
   getProducts,
   getTaxMasters,
-  getTransactions,
   getSalesOrders,
   getVoucherTypes,
   getPayments,

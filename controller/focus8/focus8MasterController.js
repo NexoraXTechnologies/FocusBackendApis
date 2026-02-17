@@ -1,4 +1,4 @@
-const { getCompanies, getAccounts, getProducts, getTaxMasters, getTransactions, getVoucherTypes } = require('../../services/focus8/focus8Service');
+const { getCompanies, getAccounts, getProducts, getTaxMasters, getSalesOrders, getVoucherTypes } = require('../../services/focus8/focus8Service');
 const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 
 /* ======================================================
@@ -70,15 +70,15 @@ const getTaxMastersController = async (req, res, next) => {
 };
 
 /* ======================================================
-   GET TRANSACTIONS 
+   GET SALES ORDERS
 ====================================================== */
-const getTransactionsController = async (req, res, next) => {
+const getSalesOrdersController = async (req, res, next) => {
     try {
-        const transactions = await getTransactions();
+        const salesOrders = await getSalesOrders();
 
         return new ApiResponse({
-            message: "Transaction list fetched successfully",
-            data: transactions
+            message: "Sales orders fetched successfully",
+            data: salesOrders
         }).send(res);
 
     } catch (err) {
@@ -108,6 +108,7 @@ module.exports = {
     getAccountsController,
     getProductsController,
     getTaxMastersController,
-    getTransactionsController,
+
+    getSalesOrdersController,
     getVoucherTypesController
 };

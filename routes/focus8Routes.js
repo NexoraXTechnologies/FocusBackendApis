@@ -10,7 +10,7 @@ const {
     getAccountsController,
     getProductsController,
     getTaxMastersController,
-    getTransactionsController,
+    getSalesOrdersController,
     getVoucherTypesController
 } = require("../controller/focus8/focus8MasterController");
 
@@ -26,23 +26,23 @@ router.post("/updateAccountsIsPosted", updateAccounts);
 // Update Products Is Posted (Reset to No)
 router.post("/updateProductsIsPosted", updateProducts);
 
-// Login to Focus8 (for frontend use)
+// Login to Focus8 
 router.post("/login", loginToFocus8Controller);
 
-// Get Company List
+// Get Company Master
 router.get("/companies", getCompaniesController);
 
-// Get Account List
+// Get Account Master
 router.get("/accounts", getAccountsController);
 
-// Get Product List
+// Get Product Master
 router.get("/products", getProductsController);
 
-// Get Tax Master List
+// Get Tax Master
 router.get("/tax-masters", getTaxMastersController);
 
-// Get Transactions List (Sales, etc.)
-router.get("/transactions", getTransactionsController);
+// Get Sales Orders (Transactions)
+router.get("/sales-orders", getSalesOrdersController);
 
 // Get Voucher Types
 router.get("/voucher-types", getVoucherTypesController);
