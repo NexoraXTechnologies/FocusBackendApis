@@ -10,5 +10,7 @@ router.use('/outstandingReport', require('./outstandingReportRoutes'));
 router.use('/pendingOrderReport', require('./pendingOrderReportRoutes'));
 router.use('/silrReport', require('./silrReportRoutes'));
 router.use('/notification', require('./notificationRoutes'));
-
+router.use('/outstandingReport', require('./outstandingReportRoutes'));
+router.use('/focus8', require('./focus8Routes'));
+router.use('/autoPost', require('./autoPostRoutes'));
 module.exports = router;

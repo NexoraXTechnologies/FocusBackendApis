@@ -24,29 +24,32 @@ const createProduct = async (payload) => {
 const getAllProducts = async (filter = {}, options = {}) => {
   const { skip = 0, limit = 50, search, isActive } = options;
 
-   const baseFilter = {
+  const baseFilter = {
     ...filter,
     isDeleted: false,
   };
 
-  // ✅ FIXED isActive handling (string + boolean)
+  // ✅ isActive logic
   if (isActive === true || isActive === 'true') {
     baseFilter.isActive = true;
   } else if (isActive === false || isActive === 'false') {
     baseFilter.isActive = false;
   } else {
-    baseFilter.isActive = true; // default behavior
+    baseFilter.isActive = true; // default
   }
 
-  const searchFilter = search
-    ? {
-        $or: [
-          { productName: { $regex: search, $options: 'i' } },
-          { productDescription: { $regex: search, $options: 'i' } },
-          { productCode: { $regex: search, $options: 'i' } }
-        ]
-      }
-    : {};
+  // ✅ FIX: Proper Search Handling
+  if (search && search.trim()) {
+    const escaped = search
+      .trim()
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    baseFilter.$or = [
+      { productName: { $regex: escaped, $options: 'i' } },
+      { productDescription: { $regex: escaped, $options: 'i' } },
+      { productCode: { $regex: escaped, $options: 'i' } }
+    ];
+  }
 
   const [products, total] = await Promise.all([
     Product.find(baseFilter)
