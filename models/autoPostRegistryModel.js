@@ -39,12 +39,7 @@ const autoPostRegistrySchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-autoPostRegistrySchema.index(
-  { productId: 1 },
-  { unique: true }
-);
-
 module.exports = mongoose.model(
   'AutoPostRegistry',
   autoPostRegistrySchema
-);autoPostRegistrySchema
+); 
