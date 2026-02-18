@@ -1,5 +1,6 @@
-const { getCompanies, getAccounts, getProducts, getTaxMasters, getSalesOrders, getVoucherTypes } = require('../../services/focus8/focus8Service');
+const { getCompanies, getAccounts, getProducts, getTaxMasters, getSalesOrders, getVoucherTypes, getCssOrders } = require('../../services/focus8/focus8Service');
 const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
+const mongoose = require('mongoose');
 
 /* ======================================================
    GET COMPANY MASTER
@@ -36,7 +37,7 @@ const getAccountsController = async (req, res, next) => {
 };
 
 /* ======================================================
-   GET PRODUCT MASTER
+   GET PRODUCT MASTER 
 ====================================================== */
 const getProductsController = async (req, res, next) => {
     try {
@@ -103,12 +104,53 @@ const getVoucherTypesController = async (req, res, next) => {
     }
 };
 
+/* ======================================================
+   GET CSS ORDERS & SYNC TO DB
+====================================================== */
+const getCssOrdersController = async (req, res, next) => {
+    try {
+        console.log("📥 Fetching CSS Orders from Focus8...");
+        const orders = await getCssOrders();
+        console.log(`📦 Received ${orders?.length || 0} CSS Orders from Focus8`);
+
+        let syncInfo = {
+            syncedCount: 0,
+            status: "No data"
+        };
+
+        if (orders && Array.isArray(orders)) {
+            const collection = mongoose.connection.collection('css_orders');
+
+            console.log("🧹 Clearing existing CSS Orders in database...");
+            await collection.deleteMany({});
+
+            if (orders.length > 0) {
+                console.log(`💾 Inserting ${orders.length} CSS Orders into database...`);
+                await collection.insertMany(orders);
+                syncInfo.syncedCount = orders.length;
+                syncInfo.status = "Success";
+                console.log("✅ CSS Orders Sync completed successfully");
+            }
+        }
+
+        return new ApiResponse({
+            message: "CSS Orders sync completed",
+            data: syncInfo
+        }).send(res);
+
+    } catch (err) {
+        console.error("❌ CSS Orders Sync failed:", err.message);
+        next(err);
+    }
+};
+
+
 module.exports = {
     getCompaniesController,
     getAccountsController,
     getProductsController,
     getTaxMastersController,
-
     getSalesOrdersController,
-    getVoucherTypesController
+    getVoucherTypesController,
+    getCssOrdersController
 };
