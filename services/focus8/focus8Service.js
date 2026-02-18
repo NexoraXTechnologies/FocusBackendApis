@@ -100,7 +100,7 @@ const getAccounts = async () => {
    PRODUCT MASTER
 ====================================================== */
 const getProducts = async () => {
-  return await focus8List('/Focus8API/List/Masters/Core__Product');
+  return await focus8List('/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iProductType,iDefaultBaseUnit__Id');
 };
 
 /* ======================================================
@@ -125,6 +125,14 @@ const getSalesOrders = async () => {
 const getVoucherTypes = async () => {
   return await focus8List('/Focus8API/Screen/Transactions/VoucherTypes');
 };
+
+/* ======================================================
+   CSS ORDERS (TRANSACTIONS)
+====================================================== */
+const getCssOrders = async () => {
+  return await focus8List('/Focus8API/List/Transactions/CSS Order');
+};
+
 
 const getPaymentByDocNo = async (docNo) => {
   const sessionId = await loginToFocus8();
@@ -331,6 +339,7 @@ module.exports = {
   getVoucherTypes,
   getPayments,
   getPaymentByDocNo,
+  getCssOrders,
   fetchProductsFromFocus8,
   updateAllAccountsIsPostedNo,
   updateAllProductsIsPostedNo

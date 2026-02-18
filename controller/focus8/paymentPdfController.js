@@ -64,7 +64,7 @@ const generatePdfController = async (req, res) => {
       payeeBankName: item.VendorBank || "",
       payeeIfsc: item.VendorBankIFSC || "",
 
-      payerName: header.CostCenter__Name || "VENUS SAFETY & HEALTH PRIVATE LIMITED",
+      payerName: header.CostCenter__Name || "",
       payerAddress1: header.Department__Name || "",
       payerAddress2: "",
       payerPin: "",
