@@ -12,7 +12,8 @@ const {
     getTaxMastersController,
     getSalesOrdersController,
     getVoucherTypesController,
-    getCssOrdersController
+    fetchCssOrdersController,
+    postCssOrderController
 } = require("../controller/focus8/focus8MasterController");
 
 // Import products from Focus8
@@ -49,6 +50,9 @@ router.get("/sales-orders", getSalesOrdersController);
 router.get("/voucher-types", getVoucherTypesController);
 
 // Get CSS Orders (Sync to DB)
-router.get("/css-orders", getCssOrdersController);
+router.get("/getCssOrders", fetchCssOrdersController);
+
+// Post CSS Order to Focus8
+router.post("/postCssOrder", postCssOrderController);
 
 module.exports = router;

@@ -1,6 +1,16 @@
-const { getCompanies, getAccounts, getProducts, getTaxMasters, getSalesOrders, getVoucherTypes, getCssOrders } = require('../../services/focus8/focus8Service');
 const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 const mongoose = require('mongoose');
+
+const {
+    getCompanies,
+    getAccounts,
+    getProducts,
+    getTaxMasters,
+    getSalesOrders,
+    getVoucherTypes,
+    getCssOrders,
+    postCssOrder } = require('../../services/focus8/focus8Service');
+
 
 /* ======================================================
    GET COMPANY MASTER
@@ -47,13 +57,13 @@ const getProductsController = async (req, res, next) => {
             message: "Product master list fetched successfully",
             data: products
         }).send(res);
-
+        ApiError
     } catch (err) {
         next(err);
     }
 };
 
-/* =============== =======================================
+/* ======================================================
    GET TAX MASTER
 ====================================================== */
 const getTaxMastersController = async (req, res, next) => {
@@ -69,6 +79,7 @@ const getTaxMastersController = async (req, res, next) => {
         next(err);
     }
 };
+
 
 /* ======================================================
    GET SALES ORDERS
@@ -103,43 +114,75 @@ const getVoucherTypesController = async (req, res, next) => {
         next(err);
     }
 };
-
 /* ======================================================
-   GET CSS ORDERS & SYNC TO DB
+   FETCH CSS ORDERS FROM FOCUS8
 ====================================================== */
-const getCssOrdersController = async (req, res, next) => {
+
+const fetchCssOrdersController = async (req, res, next) => {
     try {
-        console.log("📥 Fetching CSS Orders from Focus8...");
+        console.log("Fetching CSS Orders from Focus8...");
+
         const orders = await getCssOrders();
-        console.log(`📦 Received ${orders?.length || 0} CSS Orders from Focus8`);
 
-        let syncInfo = {
-            syncedCount: 0,
-            status: "No data"
-        };
+        console.log(`Received ${orders.length} orders`);
 
-        if (orders && Array.isArray(orders)) {
-            const collection = mongoose.connection.collection('css_orders');
+        const collection = mongoose.connection.collection("css_orders");
 
-            console.log("🧹 Clearing existing CSS Orders in database...");
-            await collection.deleteMany({});
-
-            if (orders.length > 0) {
-                console.log(`💾 Inserting ${orders.length} CSS Orders into database...`);
-                await collection.insertMany(orders);
-                syncInfo.syncedCount = orders.length;
-                syncInfo.status = "Success";
-                console.log("✅ CSS Orders Sync completed successfully");
-            }
+        if (!orders.length) {
+            return new ApiResponse({
+                message: "No CSS Orders found",
+                data: { count: 0 }
+            }).send(res);
         }
+        const bulkOps = orders.map(
+            order => ({
+                updateOne: {
+                    filter: { DocNo: order.DocNo },
+                    update: { $set: order },
+                    upsert: true
+                }
+            }));
+
+        const result = await collection.bulkWrite(bulkOps);
 
         return new ApiResponse({
-            message: "CSS Orders sync completed",
-            data: syncInfo
+            message: "CSS Orders fetched and stored successfully",
+            data: {
+                totalFetched: orders.length,
+                inserted: result.upsertedCount,
+                updated: result.modifiedCount
+            }
         }).send(res);
 
     } catch (err) {
-        console.error("❌ CSS Orders Sync failed:", err.message);
+        console.error("CSS Orders Fetch Error:", err.message);
+        next(err);
+    }
+};
+
+
+/* ======================================================
+   POST CSS ORDER TO FOCUS8
+====================================================== */
+
+const postCssOrderController = async (req, res, next) => {
+    try {
+        const payload = req.body;
+
+        if (!payload || !Array.isArray(payload.data)) {
+            throw new ApiError(400, "Invalid CSS Order payload format.");
+        }
+
+        console.log("Posting CSS Order to Focus8...");
+        const result = await postCssOrder(payload);
+
+        return new ApiResponse({
+            message: "CSS Order posted successfully",
+            data: result
+        }).send(res);
+
+    } catch (err) {
+        console.error("CSS Order Post Error:", err.message);
         next(err);
     }
 };
@@ -152,5 +195,6 @@ module.exports = {
     getTaxMastersController,
     getSalesOrdersController,
     getVoucherTypesController,
-    getCssOrdersController
+    fetchCssOrdersController,
+    postCssOrderController
 };

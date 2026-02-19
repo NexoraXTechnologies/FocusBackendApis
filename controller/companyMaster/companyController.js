@@ -43,7 +43,7 @@ const getAllCompanies = asyncHandler(async (req, res) => {
     }
   );
 
-  // ✅ USE PAGINATION UTILITY
+  // USE PAGINATION UTILITY
   const pagination = buildPaginationMeta({
     total: result.total,
     limit: result.limit,
@@ -54,7 +54,7 @@ const getAllCompanies = asyncHandler(async (req, res) => {
     statusCode: 200,
     success: true,
     message: 'Companies fetched',
-    pagination,          // 👈 returned from util
+    pagination,          
     data: result.companies
   }).send(res);
 });
