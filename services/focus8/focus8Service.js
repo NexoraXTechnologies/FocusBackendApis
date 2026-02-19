@@ -111,7 +111,6 @@ const getTaxMasters = async () => {
 };
 
 
-
 /* ======================================================
    SALES ORDERS
 ====================================================== */
@@ -127,12 +126,15 @@ const getVoucherTypes = async () => {
 };
 
 /* ======================================================
-   CSS ORDERS (TRANSACTIONS)
+   CSS ORDERS
 ====================================================== */
 const getCssOrders = async () => {
-  return await focus8List('/Focus8API/List/Transactions/CSS Order');
+  return await focus8List('/Focus8API/List/Transactions/CSS%20Order');
 };
 
+/* ======================================================
+   GET Payment BY DOCUMENT NO
+====================================================== */
 
 const getPaymentByDocNo = async (docNo) => {
   const sessionId = await loginToFocus8();
@@ -285,7 +287,6 @@ const updateAllProductsIsPostedNo = async () => {
       data: [{
         iMasterId: item.iMasterId,
         sCode: item.sCode,
-        sName: item.sName,
         IsPosted: "No"
       }]
     };
@@ -329,6 +330,23 @@ const updateAllProductsIsPostedNo = async () => {
   };
 };
 
+const postCssOrder = async (payload) => {
+  const sessionId = await loginToFocus8();
+
+  const response = await axios.post(
+    `${BASE_URL}/Focus8API/Transactions/CSS%20Order`,
+    payload,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        fSessionId: sessionId
+      }
+    }
+  );
+
+  return response.data;
+};
+
 module.exports = {
   loginToFocus8,
   getCompanies,
@@ -340,6 +358,7 @@ module.exports = {
   getPayments,
   getPaymentByDocNo,
   getCssOrders,
+  postCssOrder,
   fetchProductsFromFocus8,
   updateAllAccountsIsPostedNo,
   updateAllProductsIsPostedNo
