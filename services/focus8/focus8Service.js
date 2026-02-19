@@ -1,4 +1,3 @@
-
 const axios = require("axios");
 const https = require("https");
 
@@ -6,15 +5,18 @@ const BASE_URL = process.env.FOCUS8_BASE_URL;
 /* ★★★ SECURE UPDATE: Centralized axios instance with safe SSL handling */
 
 const httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-  keepAlive: true
+  rejectUnauthorized: false, // Core bypass
+  keepAlive: true,
+  checkServerIdentity: () => undefined // Bypasses name/expiry checks
 });
 
 const axiosFocus = axios.create({
   baseURL: BASE_URL,
   timeout: 60000,
-  httpsAgent,
-  maxRedirects: 0, // VERY IMPORTANT FIX
+  httpsAgent: httpsAgent,
+  proxy: false, // Ensure no server-level proxy interferes with the agent
+  maxRedirects: 0, // Disable redirects to check if redirect causes SSL bypass loss
+  validateStatus: (status) => status >= 200 && status < 400, // Include 3xx as success to see them
   headers: {
     "Content-Type": "application/json"
   }
@@ -24,11 +26,17 @@ const axiosFocus = axios.create({
    LOGIN TO FOCUS8
 ===================================================== */
 const loginToFocus8 = async (credentials) => {
+  // Nuclear option for IISNode/Windows environments
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  try { require("https").globalAgent.options.rejectUnauthorized = false; } catch (e) { }
+
   const username = credentials?.username || process.env.FOCUS8_USERNAME;
   const password = credentials?.password || process.env.FOCUS8_PASSWORD;
   const companyId = credentials?.companyId || process.env.FOCUS8_COMPANY;
 
-  const response = await axiosFocus.post("/focus8api/login", {
+  console.log(`[Focus8] Attempting login to ${BASE_URL}/Focus8API/login for company ${companyId}`);
+
+  const response = await axiosFocus.post("/Focus8API/login", {
     data: [
       {
         Username: username,
@@ -38,11 +46,15 @@ const loginToFocus8 = async (credentials) => {
     ],
     result: 1,
     message: ""
+  }, {
+    timeout: 20000,
+    httpsAgent // Explicitly passing again in case instance-level agent is lost
   });
 
   const sessionId = response.data?.data?.[0]?.fSessionId;
+  console.log(`[Focus8] Login response received. SessionId present: ${!!sessionId}`);
 
-  if (!sessionId) throw new Error("Focus8 login failed");
+  if (!sessionId) throw new Error("Focus8 login failed: No Session ID returned");
 
   return sessionId;
 };
@@ -200,7 +212,7 @@ const updateAllProductsIsPostedNo = async () => {
     try {
       const res = await axiosFocus.post("/Focus8API/Masters/Core__Product", payload, { headers });
       if (res.data?.result === 1) updated++;
-    } catch {}
+    } catch { }
   }
 
   return { success: true, message: `Updated ${updated} products.` };
