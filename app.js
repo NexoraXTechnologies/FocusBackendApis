@@ -1,5 +1,6 @@
 require("dotenv").config();
- 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+console.log("TLS VALUE:", process.env.NODE_TLS_REJECT_UNAUTHORIZED);
 const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
