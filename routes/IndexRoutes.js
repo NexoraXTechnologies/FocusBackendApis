@@ -14,5 +14,3 @@ router.use('/outstandingReport', require('./outstandingReportRoutes'));
 router.use('/focus8', require('./focus8Routes'));
 router.use('/autoPost', require('./autoPostRoutes'));
 module.exports = router;
-
-//added comment for testing

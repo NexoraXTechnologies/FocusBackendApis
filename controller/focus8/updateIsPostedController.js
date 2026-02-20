@@ -1,4 +1,4 @@
-const { updateAllAccountsIsPostedNo, updateAllProductsIsPostedNo } = require('../../services/focus8/focus8Service');
+const { updateAllAccountsIsPostedNo, updateAllProductsIsPostedNo } = require('../../services/focus8/focus8BulkService');
 
 const updateAccounts = async (req, res) => {
   updateAllAccountsIsPostedNo()

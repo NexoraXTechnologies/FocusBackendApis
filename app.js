@@ -1,6 +1,4 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const https = require("https");
-https.globalAgent.options.rejectUnauthorized = false;
 require("dotenv").config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 console.log("TLS VALUE:", process.env.NODE_TLS_REJECT_UNAUTHORIZED);
