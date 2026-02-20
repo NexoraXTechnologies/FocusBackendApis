@@ -6,9 +6,6 @@ const getPayments = async () =>
 const getSalesOrders = async () =>
     focus8List("/Focus8API/List/Transactions/CSS%20Order");
 
-const getVoucherTypes = async () =>
-    focus8List("/Focus8API/Screen/Transactions/VoucherTypes");
-
 const getCssOrders = async () =>
     focus8List("/Focus8API/List/Transactions/CSS%20Order");
 
@@ -40,11 +37,26 @@ const postCssOrder = async (payload) => {
     return response.data;
 };
 
+const getSalesOrderByDocNo = async (docNo) => {
+    const loginRes = await loginToFocus8();
+    const sessionId = loginRes.data[0].fSessionId;
+
+    const response = await axiosFocus.get(
+        `/Focus8API/Screen/Transactions/CSS%20Order/${encodeURIComponent(docNo)}`,
+        { headers: { fSessionId: sessionId } }
+    );
+
+    if (response.data?.result !== 1)
+        throw new Error(response.data?.message || "Focus8 Single Sales Order API failed");
+
+    return response.data;
+};
+
 module.exports = {
     getPayments,
     getSalesOrders,
-    getVoucherTypes,
     getCssOrders,
     getPaymentByDocNo,
+    getSalesOrderByDocNo,
     postCssOrder
 };

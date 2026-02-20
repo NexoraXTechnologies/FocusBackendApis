@@ -6,13 +6,12 @@ const { generatePdfController } = require("../controller/focus8/paymentPdfContro
 const { updateAccounts, updateProducts } = require("../controller/focus8/updateIsPostedController");
 const { loginToFocus8Controller } = require("../controller/focus8/focus8AuthController");
 const {
-    getCompaniesController,
     getAccountsController,
     getProductsController,
     getTaxMastersController,
     getSalesOrdersController,
-    getVoucherTypesController,
     fetchCssOrdersController,
+    getSalesOrderByDocNoController,
     postCssOrderController
 } = require("../controller/focus8/focus8MasterController");
 
@@ -34,9 +33,6 @@ router.post("/updateProductsIsPosted", updateProducts);
 // Login to Focus8 
 router.post("/login", loginToFocus8Controller);
 
-// Get Company Master
-router.get("/companies", getCompaniesController);
-
 // Get Account Master
 router.get("/accounts", getAccountsController);
 
@@ -49,13 +45,13 @@ router.get("/tax-masters", getTaxMastersController);
 // Get Sales Orders (Transactions)
 router.get("/sales-orders", getSalesOrdersController);
 
-// Get Voucher Types
-router.get("/voucher-types", getVoucherTypesController);
-
 // Get CSS Orders (Sync to DB)
 router.get("/getCssOrders", fetchCssOrdersController);
 
 // Post CSS Order to Focus8
 router.post("/postCssOrder", postCssOrderController);
+
+// Get Single Sales Order Detail by DocNo
+router.get("/sales-order/:docNo", getSalesOrderByDocNoController);
 
 module.exports = router;

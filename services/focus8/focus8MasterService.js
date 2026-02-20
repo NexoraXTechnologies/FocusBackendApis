@@ -1,9 +1,6 @@
 const { focus8List } = require("./focus8Client");
 const mongoose = require("mongoose");
 
-const getCompanies = async () =>
-    focus8List("/Focus8API/List/Company");
-
 const getAccounts = async () =>
     focus8List("/Focus8API/List/Masters/Core__Account");
 
@@ -29,7 +26,6 @@ const fetchAndStoreProducts = async () => {
 };
 
 module.exports = {
-    getCompanies,
     getAccounts,
     getProducts,
     getTaxMasters,

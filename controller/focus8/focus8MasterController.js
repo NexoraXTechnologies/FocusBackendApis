@@ -2,33 +2,15 @@ const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 const mongoose = require('mongoose');
 
 const {
-    getCompanies,
     getAccounts,
     getProducts,
     getTaxMasters } = require('../../services/focus8/focus8MasterService');
 
 const {
     getSalesOrders,
-    getVoucherTypes,
     getCssOrders,
+    getSalesOrderByDocNo,
     postCssOrder } = require('../../services/focus8/focus8TransactionService');
-
-/* ======================================================
-   GET COMPANY MASTER
-====================================================== */
-const getCompaniesController = async (req, res, next) => {
-    try {
-        const companies = await getCompanies();
-
-        return new ApiResponse({
-            message: "Company master list fetched successfully",
-            data: companies
-        }).send(res);
-
-    } catch (err) {
-        next(err);
-    }
-};
 
 /* ======================================================
    GET ACCOUNT MASTER
@@ -99,22 +81,6 @@ const getSalesOrdersController = async (req, res, next) => {
     }
 };
 
-/* ======================================================
-   GET VOUCHER TYPES
-====================================================== */
-const getVoucherTypesController = async (req, res, next) => {
-    try {
-        const voucherTypes = await getVoucherTypes();
-
-        return new ApiResponse({
-            message: "Voucher types fetched successfully",
-            data: voucherTypes
-        }).send(res);
-
-    } catch (err) {
-        next(err);
-    }
-};
 /* ======================================================
    FETCH CSS ORDERS FROM FOCUS8
 ====================================================== */
@@ -189,13 +155,37 @@ const postCssOrderController = async (req, res, next) => {
 };
 
 
+/* ======================================================
+   GET SINGLE SALES ORDER BY DOC NO
+====================================================== */
+const getSalesOrderByDocNoController = async (req, res, next) => {
+    try {
+        const { docNo } = req.params;
+
+        if (!docNo) {
+            throw new ApiError(400, "DocNo is required.");
+        }
+
+        console.log(`Fetching Sales Order Detail for DocNo: ${docNo}...`);
+        const result = await getSalesOrderByDocNo(docNo);
+
+        return new ApiResponse({
+            message: "Sales Order details fetched successfully",
+            data: result
+        }).send(res);
+
+    } catch (err) {
+        console.error("Sales Order Detail Fetch Error:", err.message);
+        next(err);
+    }
+};
+
 module.exports = {
-    getCompaniesController,
     getAccountsController,
     getProductsController,
     getTaxMastersController,
     getSalesOrdersController,
-    getVoucherTypesController,
     fetchCssOrdersController,
+    getSalesOrderByDocNoController,
     postCssOrderController
 };
