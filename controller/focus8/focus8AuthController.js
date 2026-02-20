@@ -1,4 +1,4 @@
-const { loginToFocus8 } = require('../../services/focus8/focus8Service');
+const { loginToFocus8 } = require('../../services/focus8/focus8Client');
 const { ApiResponse, ApiError } = require('../../utils/ResponseHandlers');
 
 /* ======================================================
@@ -12,11 +12,11 @@ const loginToFocus8Controller = async (req, res, next) => {
             throw new ApiError(400, "Username, password, and companyId are required.");
         }
 
-        const sessionId = await loginToFocus8({ username, password, companyId });
+        const loginResponse = await loginToFocus8({ username, password, companyId });
 
         return new ApiResponse({
             message: "Focus8 login successful",
-            data: { sessionId }
+            data: loginResponse
         }).send(res);
 
     } catch (err) {

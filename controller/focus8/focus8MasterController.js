@@ -5,12 +5,13 @@ const {
     getCompanies,
     getAccounts,
     getProducts,
-    getTaxMasters,
+    getTaxMasters } = require('../../services/focus8/focus8MasterService');
+
+const {
     getSalesOrders,
     getVoucherTypes,
     getCssOrders,
-    postCssOrder } = require('../../services/focus8/focus8Service');
-
+    postCssOrder } = require('../../services/focus8/focus8TransactionService');
 
 /* ======================================================
    GET COMPANY MASTER
@@ -20,7 +21,7 @@ const getCompaniesController = async (req, res, next) => {
         const companies = await getCompanies();
 
         return new ApiResponse({
-            message: "Company list fetched successfully",
+            message: "Company master list fetched successfully",
             data: companies
         }).send(res);
 

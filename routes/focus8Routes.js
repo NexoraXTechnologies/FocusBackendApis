@@ -16,8 +16,11 @@ const {
     postCssOrderController
 } = require("../controller/focus8/focus8MasterController");
 
-// Import products from Focus8
-router.post('/products/import', productImportController.syncProducts);
+// Import products from Focus8 (Just call and store)
+router.post('/products/import', productImportController.importProducts);
+
+// Sync products (Update IsPosted in Focus8 and store in local DB)
+router.post('/products/sync', productImportController.syncProducts);
 
 // Generate Payment PDF
 router.get("/generate-pdf/:docNo/:itemIndex", generatePdfController);
