@@ -2,7 +2,7 @@ const { focus8List } = require("./focus8Client");
 const mongoose = require("mongoose");
 
 const getAccounts = async () =>
-    focus8List("/Focus8API/List/Masters/Core__Account");
+    focus8List("Focus8API/List/Masters/Core__Account?fields=IsPosted,sCode,sName,iAccountType");
 
 const getProducts = async () =>
     focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iProductType,iDefaultBaseUnit__Id");

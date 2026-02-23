@@ -25,16 +25,38 @@ const getPaymentByDocNo = async (docNo) => {
 };
 
 const postCssOrder = async (payload) => {
-    const loginRes = await loginToFocus8();
-    const sessionId = loginRes.data[0].fSessionId;
+    try {
+        const loginRes = await loginToFocus8();
+        const sessionId = loginRes.data?.[0]?.fSessionId;
 
-    const response = await axiosFocus.post(
-        "/Focus8API/Transactions/CSS%20Order",
-        payload,
-        { headers: { fSessionId: sessionId } }
-    );
+        if (!sessionId) {
+            throw new Error("Unable to obtain Focus8 session ID for CSS order post");
+        }
 
-    return response.data;
+        // Step 2: Call Focus API
+        const response = await axiosFocus.post(
+            "/Focus8API/Transactions/CSS%20Order",
+            payload,
+            {
+                headers: {
+                    fSessionId: sessionId
+                }
+            }
+        );
+
+        // Step 3: Handle Focus error response
+        if (!response.data || response.data.result !== 1) {
+            throw new Error(
+                response.data?.message || "Focus8 CSS Order posting failed"
+            );
+        }
+
+        return response.data;
+
+    } catch (error) {
+        console.error("Focus CSS Order Service Error:", error.message);
+        throw error;
+    }
 };
 
 const getSalesOrderByDocNo = async (docNo) => {

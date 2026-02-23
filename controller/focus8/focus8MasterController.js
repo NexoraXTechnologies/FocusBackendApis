@@ -136,11 +136,13 @@ const postCssOrderController = async (req, res, next) => {
     try {
         const payload = req.body;
 
+        // Basic validation
         if (!payload || !Array.isArray(payload.data)) {
             throw new ApiError(400, "Invalid CSS Order payload format.");
         }
 
         console.log("Posting CSS Order to Focus8...");
+
         const result = await postCssOrder(payload);
 
         return new ApiResponse({
