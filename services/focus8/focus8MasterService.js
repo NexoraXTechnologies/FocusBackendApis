@@ -4,8 +4,16 @@ const mongoose = require("mongoose");
 const getAccounts = async () =>
     focus8List("Focus8API/List/Masters/Core__Account?fields=IsPosted,sCode,sName,iAccountType");
 
-const getProducts = async () =>
-    focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iProductType,iDefaultBaseUnit__Id");
+const getProducts = async () => {
+    const data = await focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,IsPosted,iDefaultBaseUnit,iProductType");
+    
+    const fgProducts = data.filter(p =>
+        p.iProductType &&
+        p.iProductType.toLowerCase().includes("finished")
+    );
+    
+    return fgProducts;
+};
 
 const getTaxMasters = async () =>
     focus8List("/Focus8API/List/Masters/Core__TaxMaster?fields=sCode,sName");
