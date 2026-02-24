@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const {
     getAccounts,
     getProducts,
-    getTaxMasters } = require('../../services/focus8/focus8MasterService');
+    getTaxMasters,
+    getBranch } = require('../../services/focus8/focus8MasterService');
 
 const {
     getSalesOrders,
@@ -56,6 +57,23 @@ const getTaxMastersController = async (req, res, next) => {
         return new ApiResponse({
             message: "Tax master list fetched successfully",
             data: taxes
+        }).send(res);
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+/* ======================================================
+   GET BRANCH
+====================================================== */
+const getBranchController = async (req, res, next) => {
+    try {
+        const branch = await getBranch();
+
+        return new ApiResponse({
+            message: "Branch fetched successfully",
+            data: branch
         }).send(res);
 
     } catch (err) {
@@ -186,6 +204,7 @@ module.exports = {
     getAccountsController,
     getProductsController,
     getTaxMastersController,
+    getBranchController,
     getSalesOrdersController,
     fetchCssOrdersController,
     getSalesOrderByDocNoController,

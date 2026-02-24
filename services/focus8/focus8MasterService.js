@@ -8,7 +8,10 @@ const getProducts = async () =>
     focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iProductType,iDefaultBaseUnit__Id");
 
 const getTaxMasters = async () =>
-    focus8List("/Focus8API/List/Masters/Core__TaxMaster");
+    focus8List("/Focus8API/List/Masters/Core__TaxMaster?fields=sCode,sName");
+
+const getBranch = async () =>
+    focus8List("/Focus8API/List/Masters/Core__Branch");
 
 const fetchProductsFromFocus8 = async () =>
     focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,iMasterId,IsPosted");
@@ -29,6 +32,7 @@ module.exports = {
     getAccounts,
     getProducts,
     getTaxMasters,
+    getBranch,
     fetchProductsFromFocus8,
     fetchAndStoreProducts
 };

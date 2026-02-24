@@ -9,6 +9,7 @@ const {
     getAccountsController,
     getProductsController,
     getTaxMastersController,
+    getBranchController,
     getSalesOrdersController,
     fetchCssOrdersController,
     getSalesOrderByDocNoController,
@@ -41,6 +42,9 @@ router.get("/products", getProductsController);
 
 // Get Tax Master
 router.get("/tax-masters", getTaxMastersController);
+
+// Get Branch
+router.get("/getBranch", getBranchController);
 
 // Get Sales Orders (Transactions)
 router.get("/sales-orders", getSalesOrdersController);
