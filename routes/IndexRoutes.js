@@ -20,6 +20,7 @@ router.use('/focus8', require('./focus8/accountRoutes'));
 router.use('/focus8', require('./focus8/taxRoutes'));
 router.use('/focus8', require('./focus8/branchRoutes'));
 router.use('/focus8', require('./focus8/loginRoutes'));
+router.use('/focus8', require('./focus8/domesticInvoiceRoutes'));
 router.use('/autoPost', require('./autoPostRoutes'));
 
 
