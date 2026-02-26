@@ -13,6 +13,7 @@ const headers = {
    SEND TO ALL USERS
 ================================ */
 const sendToAllUsers = async ({ title, message, data = {} }) => {
+  console.log(`[OneSignal] Sending to ALL. AppID: ${process.env.ONESIGNAL_APP_ID}`);
   const payload = {
     app_id: process.env.ONESIGNAL_APP_ID,
     included_segments: ['All'],
@@ -41,6 +42,7 @@ const sendToAllUsers = async ({ title, message, data = {} }) => {
    SEND TO PARTICULAR USER
 ================================ */
 const sendToUser = async ({ externalUserId, title, message, data = {} }) => {
+  console.log(`[OneSignal] Sending to User: ${externalUserId}. AppID: ${process.env.ONESIGNAL_APP_ID}`);
   if (!externalUserId) {
     throw new ApiError(
       400,
