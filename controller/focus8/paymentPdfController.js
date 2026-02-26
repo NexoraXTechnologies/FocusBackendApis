@@ -1,5 +1,5 @@
 const { generateRuntimePdf } = require("../../services/focus8/focus8PaymentPdfService");
-const { getPayments, getPaymentByDocNo } = require("../../services/focus8/focus8TransactionService");
+const { getPayments, getPaymentByDocNo } = require("../../services/focus8/salesOrderService");
 const numberToWords = require("../../utils/commanUtils/numberToWords");
 
 const generatePdfController = async (req, res) => {

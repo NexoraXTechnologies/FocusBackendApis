@@ -1,5 +1,9 @@
 const { updateAllAccountsIsPostedNo, updateAllProductsIsPostedNo } = require('../../services/focus8/focus8BulkService');
 
+
+/*=========================================
+            UPDATE ISPOSTED CONTROLLERS         
+=========================================*/
 const updateAccounts = async (req, res) => {
   updateAllAccountsIsPostedNo()
     .then((result) => {
@@ -15,6 +19,10 @@ const updateAccounts = async (req, res) => {
   });
 };
 
+
+/*=========================================
+            PRODUCT UPDATE CONTROLLERS         
+=========================================*/
 const updateProducts = async (req, res) => {
   updateAllProductsIsPostedNo()
     .then((result) => {

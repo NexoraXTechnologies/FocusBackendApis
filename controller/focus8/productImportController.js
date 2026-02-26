@@ -1,6 +1,10 @@
 const { asyncHandler, ApiResponse } = require('../../utils/ResponseHandlers');
 const productSyncService = require('../../services/focus8/productImportService');
 
+
+/*=========================================
+            PRODUCT IMPORT CONTROLLERS         
+=========================================*/
 const importProducts = asyncHandler(async (req, res) => {
   const result = await productSyncService.importProductsFromFocus8();
 
@@ -11,6 +15,10 @@ const importProducts = asyncHandler(async (req, res) => {
     data: result
   }).send(res);
 });
+
+/*=========================================
+            PRODUCT SYNC CONTROLLERS         
+=========================================*/
 
 const syncProducts = asyncHandler(async (req, res) => {
   // Run sync logic in the background

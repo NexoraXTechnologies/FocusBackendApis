@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { ApiError, errorCodes } = require('../../utils/ResponseHandlers');
-const notificationLogSchema = require('../../models/notificationLogModel'); 
+const notificationLogSchema = require('../../models/notificationLogModel');
 
 const ONESIGNAL_URL = process.env.ONESIGNAL_URL;
 
@@ -77,7 +77,15 @@ const sendToUser = async ({ externalUserId, title, message, data = {} }) => {
   return notificationLog;
 };
 
+/* ===============================
+   GET ALL NOTIFICATIONS
+================================ */
+const getNotifications = async () => {
+  return await notificationLogSchema.find().sort({ createdAt: -1 });
+};
+
 module.exports = {
   sendToAllUsers,
-  sendToUser
+  sendToUser,
+  getNotifications
 };

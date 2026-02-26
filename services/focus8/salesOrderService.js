@@ -59,6 +59,40 @@ const postCssOrder = async (payload) => {
     }
 };
 
+const updateCssOrder = async (payload) => {
+    try {
+        return await postCssOrder(payload);
+    } catch (error) {
+        console.error("Focus CSS Order Update Error:", error.message);
+        throw error;
+    }
+};
+
+const deleteCssOrder = async (docNo) => {
+    try {
+        const loginRes = await loginToFocus8();
+        const sessionId = loginRes.data?.[0]?.fSessionId;
+
+        if (!sessionId) {
+            throw new Error("Unable to obtain Focus8 session ID for CSS order delete");
+        }
+
+        const response = await axiosFocus.delete(
+            `/Focus8API/Transactions/CSS%20Order/${encodeURIComponent(docNo)}`,
+            { headers: { fSessionId: sessionId } }
+        );
+
+        if (!response.data || response.data.result !== 1) {
+            throw new Error(response.data?.message || "Focus8 CSS Order delete failed");
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error("Focus CSS Order Delete Error:", error.message);
+        throw error;
+    }
+};
+
 const getSalesOrderByDocNo = async (docNo) => {
     const loginRes = await loginToFocus8();
     const sessionId = loginRes.data[0].fSessionId;
@@ -80,5 +114,7 @@ module.exports = {
     getCssOrders,
     getPaymentByDocNo,
     getSalesOrderByDocNo,
-    postCssOrder
+    postCssOrder,
+    updateCssOrder,
+    deleteCssOrder
 };

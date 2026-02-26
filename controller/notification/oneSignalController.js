@@ -1,6 +1,6 @@
-const { asyncHandler} = require('../../utils/ResponseHandlers');
+const { asyncHandler } = require('../../utils/ResponseHandlers');
 const oneSignalService = require('../../services/notification/oneSignalService');
-const {ApiResponse} = require('../../utils/ResponseHandlers');
+const { ApiResponse } = require('../../utils/ResponseHandlers');
 
 /* ===============================
    SEND TO ALL
@@ -44,7 +44,22 @@ const sendNotificationToUser = asyncHandler(async (req, res) => {
   }).send(res);
 });
 
+/* ===============================
+   GET ALL NOTIFICATIONS
+================================ */
+const getNotificationsController = asyncHandler(async (req, res) => {
+  const result = await oneSignalService.getNotifications();
+
+  return new ApiResponse({
+    statusCode: 200,
+    success: true,
+    message: 'Notification list fetched successfully',
+    data: result
+  }).send(res);
+});
+
 module.exports = {
   sendNotificationToAll,
-  sendNotificationToUser
+  sendNotificationToUser,
+  getNotificationsController
 };

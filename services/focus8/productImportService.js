@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const axios = require('axios');
 const { loginToFocus8 } = require('./focus8Client');
-const { fetchProductsFromFocus8 } = require('./focus8MasterService');
+const { fetchProductsFromFocus8 } = require('./productService');
 
 
 const BASE_URL = process.env.FOCUS8_BASE_URL;
