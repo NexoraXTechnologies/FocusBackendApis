@@ -2,7 +2,7 @@ const { focus8List, loginToFocus8, axiosFocus } = require("./focus8Client");
 const mongoose = require("mongoose");
 
 const getProducts = async () => {
-    const data = await focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,IsPosted,iDefaultBaseUnit,iProductType,iMasterId");
+    const data = await focus8List("/Focus8API/List/Masters/Core__Product?fields=sCode,sName,IsPosted,iDefaultBaseUnit,iProductType,iMasterId,TaxMaster");
 
     const fgProducts = data.filter(p =>
         p.iProductType &&

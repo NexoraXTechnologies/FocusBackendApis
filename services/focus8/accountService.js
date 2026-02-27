@@ -4,7 +4,7 @@ const { focus8List, loginToFocus8, axiosFocus } = require("./focus8Client");
             ACCOUNT MASTER SERVICE         
 =========================================*/
 const getAccounts = async () =>
-    focus8List("Focus8API/List/Masters/Core__Account?fields=IsPosted,sCode,sName,iAccountType");
+    focus8List("Focus8API/List/Masters/Core__Account?fields=IsPosted,sCode,sName,iAccountType,iStatus,iMasterId,iCreditDays,Branch");
 
 const createAccountMaster = async (payload) => {
     try {
