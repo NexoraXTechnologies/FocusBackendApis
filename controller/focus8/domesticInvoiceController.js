@@ -1,5 +1,9 @@
 const { ApiResponse } = require('../../utils/ResponseHandlers');
-const { getDomesticInvoices, getDomesticInvoiceByDocNo } = require('../../services/focus8/domesticInvoiceService');
+const {
+    getDomesticInvoices,
+    getDomesticInvoiceByDocNo,
+    updateDomesticInvoice
+} = require('../../services/focus8/domesticInvoiceService');
 
 /*=========================================
       DOMESTIC INVOICE CONTROLLERS         
@@ -38,7 +42,25 @@ const getDomesticInvoiceByDocNoController = async (req, res, next) => {
     }
 };
 
+/**
+ * Update Domestic Invoice
+ */
+const updateDomesticInvoiceController = async (req, res, next) => {
+    try {
+        const payload = req.body;
+        const result = await updateDomesticInvoice(payload);
+
+        return new ApiResponse({
+            message: "Domestic invoice updated successfully",
+            data: result
+        }).send(res);
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     getDomesticInvoicesController,
-    getDomesticInvoiceByDocNoController
+    getDomesticInvoiceByDocNoController,
+    updateDomesticInvoiceController
 };

@@ -25,7 +25,27 @@ const getDomesticInvoiceByDocNo = async (docNo) => {
     return response.data;
 };
 
+/**
+ * Update Domestic Invoice
+ */
+const updateDomesticInvoice = async (payload) => {
+    const loginRes = await loginToFocus8();
+    const sessionId = loginRes.data[0].fSessionId;
+
+    const response = await axiosFocus.post(
+        "/Focus8API/Transactions/Domestic Proforma Invoice",
+        payload,
+        { headers: { fSessionId: sessionId } }
+    );
+
+    if (response.data?.result !== 1)
+        throw new Error(response.data?.message || "Focus8 Domestic Invoice update failed");
+
+    return response.data;
+};
+
 module.exports = {
     getDomesticInvoices,
-    getDomesticInvoiceByDocNo
+    getDomesticInvoiceByDocNo,
+    updateDomesticInvoice
 };
